@@ -89,6 +89,16 @@ const Home = () => {
             </div>
             <div className="flex items-center space-x-4">
               <Link
+                to="/pricing"
+                className="text-white hover:text-blue-200 font-medium transition-colors">
+                Pricing
+              </Link>
+              <Link
+                to="/docs"
+                className="text-white hover:text-blue-200 font-medium transition-colors">
+                Docs
+              </Link>
+              <Link
                 to="/login"
                 className="text-white hover:text-blue-200 font-medium transition-colors">
                 Sign In
@@ -321,9 +331,11 @@ const Home = () => {
                   </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    to="/pricing"
+                    className="hover:text-white transition-colors">
                     Pricing
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -332,14 +344,18 @@ const Home = () => {
               <h4 className="text-white font-bold mb-4">Resources</h4>
               <ul className="space-y-2 text-blue-200 text-sm">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    to="/docs"
+                    className="hover:text-white transition-colors">
                     Documentation
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    to="/docs#endpoints"
+                    className="hover:text-white transition-colors">
                     API Reference
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">

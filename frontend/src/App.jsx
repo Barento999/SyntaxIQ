@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Home from "./pages/Home";
@@ -11,6 +6,9 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ReviewDetail from "./pages/ReviewDetail";
+import Settings from "./pages/Settings";
+import Pricing from "./pages/Pricing";
+import Documentation from "./pages/Documentation";
 
 function App() {
   return (
@@ -20,6 +18,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/docs" element={<Documentation />} />
           <Route
             path="/dashboard"
             element={
@@ -33,6 +33,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ReviewDetail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Settings />
               </PrivateRoute>
             }
           />
