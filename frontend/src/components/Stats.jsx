@@ -20,43 +20,26 @@ const Stats = ({ reviews }) => {
   );
 
   const stats = [
-    { label: "Total Reviews", value: totalReviews, icon: "📊", color: "blue" },
-    {
-      label: "Average Score",
-      value: `${avgScore}/100`,
-      icon: "⭐",
-      color: "yellow",
-    },
-    { label: "Bugs Found", value: totalBugs, icon: "🐛", color: "red" },
-    {
-      label: "Security Issues",
-      value: totalSecurity,
-      icon: "🔒",
-      color: "purple",
-    },
+    { label: "Total Reviews", value: totalReviews, change: null },
+    { label: "Average Score", value: `${avgScore}/100`, change: null },
+    { label: "Bugs Found", value: totalBugs, change: null },
+    { label: "Security Issues", value: totalSecurity, change: null },
   ];
 
-  const colorClasses = {
-    blue: "from-blue-500 to-blue-600",
-    yellow: "from-yellow-500 to-yellow-600",
-    red: "from-red-500 to-red-600",
-    purple: "from-purple-500 to-purple-600",
-  };
-
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
       {stats.map((stat, index) => (
         <div
           key={index}
-          className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-3xl">{stat.icon}</span>
-            <div
-              className={`w-12 h-12 bg-gradient-to-br ${colorClasses[stat.color]} rounded-lg flex items-center justify-center text-white font-bold text-lg`}>
+          className="bg-white overflow-hidden rounded-lg border border-gray-200">
+          <div className="px-4 py-5 sm:p-6">
+            <dt className="text-sm font-medium text-gray-500 truncate">
+              {stat.label}
+            </dt>
+            <dd className="mt-1 text-3xl font-semibold text-gray-900">
               {stat.value}
-            </div>
+            </dd>
           </div>
-          <p className="text-sm font-semibold text-gray-600">{stat.label}</p>
         </div>
       ))}
     </div>
