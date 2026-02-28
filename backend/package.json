@@ -1,7 +1,7 @@
 {
-  "name": "ai-code-review-backend",
+  "name": "codereview-ai-backend",
   "version": "1.0.0",
-  "description": "AI Code Review Platform Backend",
+  "description": "CodeReview AI Platform Backend",
   "main": "server.js",
   "type": "module",
   "scripts": {

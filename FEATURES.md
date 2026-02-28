@@ -1,4 +1,4 @@
-# 🎉 AI Code Review Platform - Complete Feature List
+# 🎉 CodeReview AI - Complete Feature List
 
 ## ✅ Implemented Features
 

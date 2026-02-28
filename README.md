@@ -1,4 +1,4 @@
-# 🤖 AI Code Review Platform
+# 🤖 CodeReview AI
 
 ### Intelligent Code Analysis Powered by Google Gemini AI
 

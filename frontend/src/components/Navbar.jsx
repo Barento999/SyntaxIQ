@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import Logo from "./Logo";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -15,27 +16,8 @@ const Navbar = () => {
     <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg bg-white/95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg shadow-md">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                AI Code Review
-              </h1>
-              <p className="text-xs text-gray-500">Powered by Gemini AI</p>
-            </div>
+          <div className="flex items-center">
+            <Logo size="md" showText={true} variant="default" />
           </div>
           <div className="flex items-center space-x-4">
             <div className="hidden sm:flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-lg">
