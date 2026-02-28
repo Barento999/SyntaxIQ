@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const PublicNavbar = () => {
-  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
-
   return (
     <nav className="bg-black/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,14 +31,19 @@ const PublicNavbar = () => {
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
+                to="/pricing"
+                className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
+                Pricing
+              </Link>
+              <Link
                 to="/features"
                 className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
                 Features
               </Link>
               <Link
-                to="/pricing"
+                to="/docs"
                 className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
-                Pricing
+                Docs
               </Link>
               <Link
                 to="/about"
@@ -53,57 +55,6 @@ const PublicNavbar = () => {
                 className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
                 Blog
               </Link>
-
-              {/* Resources Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setIsResourcesOpen(true)}
-                onMouseLeave={() => setIsResourcesOpen(false)}>
-                <button className="text-gray-300 hover:text-white font-medium transition-colors text-sm flex items-center">
-                  Resources
-                  <svg
-                    className={`w-4 h-4 ml-1 transition-transform ${isResourcesOpen ? "rotate-180" : ""}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-
-                {isResourcesOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-gray-900 border border-white/10 rounded-lg shadow-xl overflow-hidden">
-                    <Link
-                      to="/docs"
-                      className="block px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                      Documentation
-                    </Link>
-                    <a
-                      href="/#faq"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const element = document.getElementById("faq");
-                        if (element) {
-                          element.scrollIntoView({ behavior: "smooth" });
-                        } else {
-                          window.location.href = "/#faq";
-                        }
-                      }}
-                      className="block px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer">
-                      FAQ
-                    </a>
-                    <a
-                      href="mailto:support@syntaxiq.ai"
-                      className="block px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                      Support
-                    </a>
-                  </div>
-                )}
-              </div>
             </div>
 
             <Link
