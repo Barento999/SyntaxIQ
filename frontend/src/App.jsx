@@ -9,6 +9,9 @@ import ReviewDetail from "./pages/ReviewDetail";
 import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
 import Documentation from "./pages/Documentation";
+import Features from "./pages/Features";
+import About from "./pages/About";
+import Blog from "./pages/Blog";
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/docs" element={<Documentation />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
           <Route
             path="/dashboard"
             element={

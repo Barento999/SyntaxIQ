@@ -1294,7 +1294,7 @@ const Home = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-32 relative">
+      <div id="faq" className="py-32 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/5 to-transparent"></div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-20">
