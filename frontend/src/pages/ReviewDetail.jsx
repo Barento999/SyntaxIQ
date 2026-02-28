@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import Navbar from "../components/Navbar";
+import LoadingSpinner from "../components/LoadingSpinner";
+import CodeSnippet from "../components/CodeSnippet";
 
 const ReviewDetail = () => {
   const [review, setReview] = useState(null);
@@ -62,10 +64,7 @@ const ReviewDetail = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <Navbar />
         <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 font-medium">Loading review...</p>
-          </div>
+          <LoadingSpinner size="lg" text="Loading review..." />
         </div>
       </div>
     );
@@ -360,11 +359,10 @@ const ReviewDetail = () => {
                 Refactored Code
               </h3>
             </div>
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 overflow-x-auto shadow-inner">
-              <pre className="text-green-400 text-sm font-mono leading-relaxed">
-                <code>{aiResponse.refactoredCode}</code>
-              </pre>
-            </div>
+            <CodeSnippet
+              code={aiResponse.refactoredCode}
+              language={review.language}
+            />
           </div>
         )}
       </div>
