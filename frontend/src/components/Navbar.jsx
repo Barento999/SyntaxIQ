@@ -40,7 +40,7 @@ const Navbar = () => {
             <button
               onClick={() => navigate("/settings")}
               className="hidden sm:flex items-center space-x-3 px-3 py-1.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
               <span className="text-sm font-medium text-gray-700">
@@ -49,7 +49,7 @@ const Navbar = () => {
             </button>
             <button
               onClick={handleLogout}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+              className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
               Sign out
             </button>
           </div>

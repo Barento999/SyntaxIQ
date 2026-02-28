@@ -46,7 +46,7 @@ const Register = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                className="font-medium text-green-600 hover:text-green-500 transition-colors">
                 Sign in
               </Link>
             </p>
@@ -131,7 +131,7 @@ const Register = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                  className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold">
                   {loading ? "Creating account..." : "Create account"}
                 </button>
               </div>
@@ -149,28 +149,28 @@ const Register = () => {
       </div>
 
       {/* Right side - Image/Gradient */}
-      <div className="hidden lg:block relative w-0 flex-1 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
+      <div className="hidden lg:block relative w-0 flex-1 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700">
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="max-w-md text-white">
             <h3 className="text-3xl font-bold mb-4">
               Start reviewing code in minutes
             </h3>
-            <p className="text-lg text-blue-100 mb-8">
+            <p className="text-lg text-green-100 mb-8">
               Join thousands of developers using AI to write better, safer, and
               more efficient code.
             </p>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
               <div className="flex items-center mb-4">
                 <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-400 border-2 border-white"></div>
-                  <div className="w-8 h-8 rounded-full bg-indigo-400 border-2 border-white"></div>
-                  <div className="w-8 h-8 rounded-full bg-purple-400 border-2 border-white"></div>
+                  <div className="w-8 h-8 rounded-full bg-green-400 border-2 border-white"></div>
+                  <div className="w-8 h-8 rounded-full bg-emerald-400 border-2 border-white"></div>
+                  <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-white"></div>
                 </div>
                 <span className="ml-3 text-sm font-medium">
                   10,000+ developers
                 </span>
               </div>
-              <p className="text-sm text-blue-100">
+              <p className="text-sm text-green-100">
                 "CodeReview AI has transformed how we review code. It's like
                 having an expert developer on your team 24/7."
               </p>

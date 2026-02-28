@@ -8,19 +8,19 @@ const Logo = ({ size = "md", showText = true, variant = "default" }) => {
 
   const variants = {
     default: {
-      bg: "bg-gradient-to-br from-blue-600 to-indigo-600",
+      bg: "bg-gradient-to-br from-green-500 to-emerald-600",
       text: "text-gray-900",
-      glow: "shadow-lg shadow-blue-500/50",
+      glow: "shadow-lg shadow-green-500/50",
     },
     light: {
-      bg: "bg-gradient-to-br from-blue-500 to-indigo-500",
+      bg: "bg-gradient-to-br from-green-400 to-emerald-500",
       text: "text-white",
-      glow: "shadow-xl shadow-blue-400/30",
+      glow: "shadow-xl shadow-green-400/30",
     },
     dark: {
-      bg: "bg-gradient-to-br from-blue-400 to-indigo-400",
+      bg: "bg-gradient-to-br from-green-300 to-emerald-400",
       text: "text-white",
-      glow: "shadow-2xl shadow-blue-300/40",
+      glow: "shadow-2xl shadow-green-300/40",
     },
   };
 
@@ -57,7 +57,7 @@ const Logo = ({ size = "md", showText = true, variant = "default" }) => {
         <div className="flex flex-col">
           <span
             className={`${currentSize.text} font-bold ${currentVariant.text} leading-tight`}>
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
               CodeReview AI
             </span>
           </span>
