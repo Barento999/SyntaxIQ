@@ -184,7 +184,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
-      <PublicNavbar />icNavbar>
+      <PublicNavbar />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
