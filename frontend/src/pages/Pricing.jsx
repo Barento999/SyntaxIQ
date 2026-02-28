@@ -469,50 +469,6 @@ const Pricing = () => {
             ))}
           </dl>
         </div>
-
-        {/* CTA Section */}
-        <div className="mb-24">
-          <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl border border-white/10 p-12 md:p-16 text-center shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10"></div>
-            <div className="relative">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                  Ready to Get Started?
-                </span>
-              </h2>
-              <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-                Join thousands of developers using AI to write better code
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl font-bold text-lg transition-all shadow-2xl shadow-green-500/50 hover:shadow-green-500/70 hover:scale-105 text-black">
-                  <span>Start Free Trial</span>
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white/5 backdrop-blur-sm hover:bg-white/10 rounded-xl font-bold text-lg transition-all border border-white/10">
-                  Contact Sales
-                </Link>
-              </div>
-              <p className="text-sm text-gray-500 mt-6">
-                No credit card required • Cancel anytime
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
