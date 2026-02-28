@@ -58,7 +58,7 @@ const Logo = ({ size = "md", showText = true, variant = "default" }) => {
           <span
             className={`${currentSize.text} font-bold ${currentVariant.text} leading-tight`}>
             <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-              CodeReview AI
+              SyntaxIQ
             </span>
           </span>
           <span className="text-xs text-gray-500 font-medium">

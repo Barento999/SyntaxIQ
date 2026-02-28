@@ -171,8 +171,8 @@ const Register = () => {
                 </span>
               </div>
               <p className="text-sm text-green-100">
-                "CodeReview AI has transformed how we review code. It's like
-                having an expert developer on your team 24/7."
+                "SyntaxIQ has transformed how we review code. It's like having
+                an expert developer on your team 24/7."
               </p>
               <p className="mt-3 text-sm font-medium">
                 — Sarah Chen, Tech Lead

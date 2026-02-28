@@ -1,4 +1,4 @@
-# 🎉 CodeReview AI - Complete Feature List
+# 🎉 SyntaxIQ - Complete Feature List
 
 ## ✅ Implemented Features
 

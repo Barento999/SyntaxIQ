@@ -6,7 +6,7 @@ const Pricing = () => {
     {
       name: "Free",
       price: "$0",
-      description: "Perfect for trying out CodeReview AI",
+      description: "Perfect for trying out SyntaxIQ",
       features: [
         "10 reviews per month",
         "Basic code analysis",

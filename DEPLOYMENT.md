@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying CodeReview AI to production environments.
+This guide covers deploying SyntaxIQ to production environments.
 
 ## Prerequisites
 

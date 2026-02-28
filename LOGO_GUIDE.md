@@ -1,4 +1,4 @@
-# 🎨 CodeReview AI - Logo Guide
+# 🎨 SyntaxIQ - Logo Guide
 
 ## Logo Design Concept
 
@@ -226,4 +226,4 @@ Potential additions:
 
 ---
 
-**Created with ❤️ for AI Code Review Platform**
+**Created with ❤️ for SyntaxIQ Platform**

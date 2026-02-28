@@ -149,7 +149,7 @@ const Home = () => {
       role: "Senior Developer",
       company: "TechCorp",
       content:
-        "CodeReview AI has transformed how we review code. It catches issues we might have missed and saves hours of manual review time.",
+        "SyntaxIQ has transformed how we review code. It catches issues we might have missed and saves hours of manual review time.",
       avatar: "SC",
     },
     {
@@ -199,7 +199,7 @@ const Home = () => {
                 </svg>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                CodeReview AI
+                SyntaxIQ
               </span>
             </div>
             <div className="flex items-center space-x-6">
@@ -516,7 +516,7 @@ const Home = () => {
               </span>
             </h2>
             <p className="text-xl text-gray-400">
-              See what developers are saying about CodeReview AI
+              See what developers are saying about SyntaxIQ
             </p>
           </div>
 
@@ -621,7 +621,7 @@ const Home = () => {
                   </svg>
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                  CodeReview AI
+                  SyntaxIQ
                 </span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
@@ -757,7 +757,7 @@ const Home = () => {
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              &copy; 2024 CodeReview AI. All rights reserved.
+              &copy; 2024 SyntaxIQ. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a

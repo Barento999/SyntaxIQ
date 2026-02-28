@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to CodeReview AI will be documented in this file.
+All notable changes to SyntaxIQ will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of CodeReview AI
+- Initial release of SyntaxIQ
 - AI-powered code review using Google Gemini 1.5 Pro
 - Support for 12+ programming languages
 - User authentication with JWT

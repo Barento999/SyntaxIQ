@@ -9,7 +9,7 @@
 
 ## Reporting a Vulnerability
 
-We take security seriously at CodeReview AI. If you discover a security vulnerability, please follow these steps:
+We take security seriously at SyntaxIQ. If you discover a security vulnerability, please follow these steps:
 
 ### 1. Do Not Disclose Publicly
 
@@ -80,6 +80,6 @@ Include:
 ## Contact
 
 For security concerns: security@codereview.ai
-For general support: support@codereview.ai
+For general support: support@syntaxiq.ai
 
-Thank you for helping keep CodeReview AI secure!
+Thank you for helping keep SyntaxIQ secure!

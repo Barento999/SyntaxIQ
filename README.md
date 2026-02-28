@@ -1,4 +1,4 @@
-# 🤖 CodeReview AI
+# 🤖 SyntaxIQ
 
 ### Intelligent Code Analysis Powered by Google Gemini AI
 

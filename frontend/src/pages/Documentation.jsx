@@ -87,14 +87,13 @@ const Documentation = () => {
             <div className="prose prose-blue max-w-none">
               <h1 id="intro">Documentation</h1>
               <p className="lead">
-                Learn how to integrate CodeReview AI into your development
-                workflow.
+                Learn how to integrate SyntaxIQ into your development workflow.
               </p>
 
               <h2 id="quickstart">Quick Start</h2>
               <p>
-                Get started with CodeReview AI in minutes. Follow these simple
-                steps to submit your first code review.
+                Get started with SyntaxIQ in minutes. Follow these simple steps
+                to submit your first code review.
               </p>
 
               <div className="bg-gray-50 rounded-lg p-6 my-6 border border-gray-200">
@@ -145,7 +144,7 @@ const Documentation = () => {
               </p>
 
               <h3>Supported Languages</h3>
-              <p>CodeReview AI supports 12+ programming languages:</p>
+              <p>SyntaxIQ supports 12+ programming languages:</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 my-6">
                 {[
                   "JavaScript",
