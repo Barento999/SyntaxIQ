@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Logo from "../components/Logo";
+import PublicNavbar from "../components/PublicNavbar";
 
 const Documentation = () => {
   const sections = [
@@ -32,34 +32,7 @@ const Documentation = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
-      <nav className="bg-black/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/">
-                <Logo size="md" showText={true} variant="default" />
-              </Link>
-            </div>
-            <div className="flex items-center space-x-6">
-              <Link
-                to="/pricing"
-                className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
-                Pricing
-              </Link>
-              <Link
-                to="/login"
-                className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
-                Sign In
-              </Link>
-              <Link
-                to="/register"
-                className="bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-black px-5 py-2 rounded-lg font-semibold transition-all shadow-lg shadow-green-500/50 hover:shadow-green-500/70 text-sm">
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <PublicNavbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
