@@ -30,9 +30,9 @@ const Documentation = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-200">
+      <nav className="bg-black/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -40,15 +40,20 @@ const Documentation = () => {
                 <Logo size="md" showText={true} variant="default" />
               </Link>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
+              <Link
+                to="/pricing"
+                className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
+                Pricing
+              </Link>
               <Link
                 to="/login"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                Sign in
+                className="text-gray-300 hover:text-white font-medium transition-colors text-sm">
+                Sign In
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700">
+                className="bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-black px-5 py-2 rounded-lg font-semibold transition-all shadow-lg shadow-green-500/50 hover:shadow-green-500/70 text-sm">
                 Get Started
               </Link>
             </div>
@@ -60,10 +65,10 @@ const Documentation = () => {
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           {/* Sidebar */}
           <aside className="hidden lg:block lg:col-span-3">
-            <nav className="sticky top-8 space-y-8">
+            <nav className="sticky top-24 space-y-8">
               {sections.map((section, idx) => (
                 <div key={idx}>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  <h3 className="text-sm font-bold text-white mb-3">
                     {section.title}
                   </h3>
                   <ul className="space-y-2">
@@ -71,7 +76,7 @@ const Documentation = () => {
                       <li key={itemIdx}>
                         <a
                           href={item.href}
-                          className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                          className="text-sm text-gray-400 hover:text-green-400 transition-colors block py-1">
                           {item.name}
                         </a>
                       </li>
@@ -84,68 +89,151 @@ const Documentation = () => {
 
           {/* Main content */}
           <main className="lg:col-span-9">
-            <div className="prose prose-blue max-w-none">
-              <h1 id="intro">Documentation</h1>
-              <p className="lead">
+            <div className="prose prose-invert max-w-none">
+              <h1
+                id="intro"
+                className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                Documentation
+              </h1>
+              <p className="text-xl text-gray-400 mb-12">
                 Learn how to integrate SyntaxIQ into your development workflow.
               </p>
 
-              <h2 id="quickstart">Quick Start</h2>
-              <p>
+              <h2
+                id="quickstart"
+                className="text-3xl font-bold text-white mt-16 mb-6">
+                Quick Start
+              </h2>
+              <p className="text-gray-400 mb-6">
                 Get started with SyntaxIQ in minutes. Follow these simple steps
                 to submit your first code review.
               </p>
 
-              <div className="bg-gray-50 rounded-lg p-6 my-6 border border-gray-200">
-                <h3 className="text-lg font-semibold mb-4">
-                  Step 1: Create an Account
+              <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 my-8 border border-green-500/30">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <span className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mr-3 text-green-400">
+                    1
+                  </span>
+                  Create an Account
                 </h3>
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-400 mb-6">
                   Sign up for a free account to get started. No credit card
                   required.
                 </p>
                 <Link
                   to="/register"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700">
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-black rounded-lg font-semibold transition-all shadow-lg shadow-green-500/50">
                   Create Account
                 </Link>
               </div>
 
-              <h3>Step 2: Submit Your Code</h3>
-              <p>
+              <h3 className="text-2xl font-bold text-white mt-12 mb-4">
+                Step 2: Submit Your Code
+              </h3>
+              <p className="text-gray-400 mb-6">
                 Navigate to your dashboard and paste your code into the editor.
                 Select the programming language and click "Submit for Review".
               </p>
 
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-gray-900 text-gray-100 p-6 rounded-xl overflow-x-auto border border-white/10 my-6">
                 <code>{`function example() {
   console.log('Hello, World!');
   return true;
 }`}</code>
               </pre>
 
-              <h3>Step 3: Review Results</h3>
-              <p>
+              <h3 className="text-2xl font-bold text-white mt-12 mb-4">
+                Step 3: Review Results
+              </h3>
+              <p className="text-gray-400 mb-4">
                 Within seconds, you'll receive a comprehensive analysis
                 including:
               </p>
-              <ul>
-                <li>Bug detection with severity levels</li>
-                <li>Security vulnerability scanning</li>
-                <li>Performance optimization suggestions</li>
-                <li>Code quality recommendations</li>
-                <li>Refactored code examples</li>
+              <ul className="space-y-3 mb-12">
+                <li className="flex items-start text-gray-300">
+                  <svg
+                    className="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Bug detection with severity levels
+                </li>
+                <li className="flex items-start text-gray-300">
+                  <svg
+                    className="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Security vulnerability scanning
+                </li>
+                <li className="flex items-start text-gray-300">
+                  <svg
+                    className="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Performance optimization suggestions
+                </li>
+                <li className="flex items-start text-gray-300">
+                  <svg
+                    className="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Code quality recommendations
+                </li>
+                <li className="flex items-start text-gray-300">
+                  <svg
+                    className="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Refactored code examples
+                </li>
               </ul>
 
-              <h2 id="analysis">Code Analysis</h2>
-              <p>
+              <h2
+                id="analysis"
+                className="text-3xl font-bold text-white mt-16 mb-6">
+                Code Analysis
+              </h2>
+              <p className="text-gray-400 mb-6">
                 Our AI-powered analysis uses Google Gemini 1.5 Pro to provide
                 intelligent feedback on your code.
               </p>
 
-              <h3>Supported Languages</h3>
-              <p>SyntaxIQ supports 12+ programming languages:</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 my-6">
+              <h3 className="text-2xl font-bold text-white mt-12 mb-6">
+                Supported Languages
+              </h3>
+              <p className="text-gray-400 mb-6">
+                SyntaxIQ supports 12+ programming languages:
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 my-8">
                 {[
                   "JavaScript",
                   "TypeScript",
@@ -162,67 +250,111 @@ const Documentation = () => {
                 ].map((lang) => (
                   <div
                     key={lang}
-                    className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="text-sm font-medium text-gray-900">
+                    className="flex items-center p-4 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-white/10 hover:border-green-500/30 transition-all">
+                    <span className="text-sm font-semibold text-white">
                       {lang}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <h2 id="auth">API Authentication</h2>
-              <p>
+              <h2
+                id="auth"
+                className="text-3xl font-bold text-white mt-16 mb-6">
+                API Authentication
+              </h2>
+              <p className="text-gray-400 mb-6">
                 All API requests require authentication using JWT tokens.
                 Include your token in the Authorization header:
               </p>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-gray-900 text-gray-100 p-6 rounded-xl overflow-x-auto border border-white/10 my-6">
                 <code>{`Authorization: Bearer YOUR_JWT_TOKEN`}</code>
               </pre>
 
-              <h2 id="endpoints">API Endpoints</h2>
+              <h2
+                id="endpoints"
+                className="text-3xl font-bold text-white mt-16 mb-6">
+                API Endpoints
+              </h2>
 
-              <h3>POST /api/review</h3>
-              <p>Submit code for AI review.</p>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+              <h3 className="text-2xl font-bold text-white mt-12 mb-4">
+                POST /api/review
+              </h3>
+              <p className="text-gray-400 mb-4">Submit code for AI review.</p>
+              <pre className="bg-gray-900 text-gray-100 p-6 rounded-xl overflow-x-auto border border-white/10 my-6">
                 <code>{`{
   "code": "function example() { ... }",
   "language": "javascript"
 }`}</code>
               </pre>
 
-              <h3>GET /api/review/:id</h3>
-              <p>Retrieve a specific review by ID.</p>
+              <h3 className="text-2xl font-bold text-white mt-12 mb-4">
+                GET /api/review/:id
+              </h3>
+              <p className="text-gray-400 mb-6">
+                Retrieve a specific review by ID.
+              </p>
 
-              <h3>GET /api/review/user</h3>
-              <p>Get all reviews for the authenticated user.</p>
+              <h3 className="text-2xl font-bold text-white mt-12 mb-4">
+                GET /api/review/user
+              </h3>
+              <p className="text-gray-400 mb-6">
+                Get all reviews for the authenticated user.
+              </p>
 
-              <h2 id="limits">Rate Limits</h2>
-              <p>
+              <h2
+                id="limits"
+                className="text-3xl font-bold text-white mt-16 mb-6">
+                Rate Limits
+              </h2>
+              <p className="text-gray-400 mb-4">
                 To ensure fair usage, we implement the following rate limits:
               </p>
-              <ul>
-                <li>
-                  <strong>Free Plan:</strong> 10 reviews per month
+              <ul className="space-y-3 mb-12">
+                <li className="flex items-start text-gray-300">
+                  <span className="text-green-400 mr-3">•</span>
+                  <span>
+                    <strong className="text-white">Free Plan:</strong> 10
+                    reviews per month
+                  </span>
                 </li>
-                <li>
-                  <strong>Pro Plan:</strong> Unlimited reviews
+                <li className="flex items-start text-gray-300">
+                  <span className="text-green-400 mr-3">•</span>
+                  <span>
+                    <strong className="text-white">Pro Plan:</strong> Unlimited
+                    reviews
+                  </span>
                 </li>
-                <li>
-                  <strong>API Requests:</strong> 100 requests per 15 minutes
+                <li className="flex items-start text-gray-300">
+                  <span className="text-green-400 mr-3">•</span>
+                  <span>
+                    <strong className="text-white">API Requests:</strong> 100
+                    requests per 15 minutes
+                  </span>
                 </li>
               </ul>
 
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-6 my-8">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">
+              <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-l-4 border-green-500 p-8 my-12 rounded-r-xl">
+                <h3 className="text-xl font-bold text-white mb-3 flex items-center">
+                  <svg
+                    className="w-6 h-6 text-green-400 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                   Need Help?
                 </h3>
-                <p className="text-blue-800">
+                <p className="text-gray-300">
                   If you have questions or need assistance, please contact our
                   support team at{" "}
                   <a
-                    href="mailto:support@codereview.ai"
-                    className="font-medium underline">
-                    support@codereview.ai
+                    href="mailto:support@syntaxiq.ai"
+                    className="text-green-400 hover:text-green-300 font-semibold underline">
+                    support@syntaxiq.ai
                   </a>
                 </p>
               </div>
