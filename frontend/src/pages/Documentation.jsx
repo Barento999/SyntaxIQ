@@ -51,69 +51,69 @@ const Documentation = () => {
       {/* Navigation */}
       <PublicNavbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          {/* Sidebar */}
-          <aside className="hidden lg:block lg:col-span-3">
-            <nav className="sticky top-24 space-y-6 bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-white/10 p-6">
-              {sections.map((section, idx) => (
-                <div key={idx}>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                    {section.title}
-                  </h3>
-                  <ul className="space-y-2">
-                    {section.items.map((item, itemIdx) => (
-                      <li key={itemIdx}>
-                        <a
-                          href={item.href}
-                          onClick={() => setActiveSection(item.id)}
-                          className={`text-sm transition-colors block py-1.5 px-3 rounded-lg ${
-                            activeSection === item.id
-                              ? "text-green-400 bg-green-500/10 font-semibold"
-                              : "text-gray-400 hover:text-white hover:bg-white/5"
-                          }`}>
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-
-              {/* Quick Links */}
-              <div className="pt-6 border-t border-white/10">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                  Quick Links
-                </h3>
-                <ul className="space-y-2">
-                  <li>
-                    <Link
-                      to="/pricing"
-                      className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
-                      Pricing
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/register"
-                      className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
-                      Sign Up
-                    </Link>
-                  </li>
-                  <li>
+      {/* Sidebar - Fixed at left */}
+      <aside className="hidden lg:block fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-black border-r border-white/10 overflow-y-auto z-40">
+        <nav className="p-6 space-y-6">
+          {sections.map((section, idx) => (
+            <div key={idx}>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                {section.title}
+              </h3>
+              <ul className="space-y-2">
+                {section.items.map((item, itemIdx) => (
+                  <li key={itemIdx}>
                     <a
-                      href="mailto:support@syntaxiq.ai"
-                      className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
-                      Support
+                      href={item.href}
+                      onClick={() => setActiveSection(item.id)}
+                      className={`text-sm transition-colors block py-1.5 px-3 rounded-lg ${
+                        activeSection === item.id
+                          ? "text-green-400 bg-green-500/10 font-semibold"
+                          : "text-gray-400 hover:text-white hover:bg-white/5"
+                      }`}>
+                      {item.name}
                     </a>
                   </li>
-                </ul>
-              </div>
-            </nav>
-          </aside>
+                ))}
+              </ul>
+            </div>
+          ))}
 
-          {/* Main content */}
-          <main className="lg:col-span-9">
+          {/* Quick Links */}
+          <div className="pt-6 border-t border-white/10">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+              Quick Links
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  to="/pricing"
+                  className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/register"
+                  className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
+                  Sign Up
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@syntaxiq.ai"
+                  className="text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors block py-1.5 px-3 rounded-lg">
+                  Support
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      {/* Main content with left margin for sidebar */}
+      <div className="lg:ml-64">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <main>
             <div className="prose prose-invert max-w-none">
               <h1
                 id="intro"
