@@ -747,9 +747,9 @@ const ReviewDetail = () => {
             />
           </div>
         )}
-
-        <Footer />
       </div>
+
+      <Footer />
     </div>
   );
 };
