@@ -1,13 +1,149 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const Settings = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("profile");
   const navigate = useNavigate();
+
+  // Profile state
+  const [profileData, setProfileData] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+  });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileMessage, setProfileMessage] = useState({ type: "", text: "" });
+
+  // Preferences state
+  const [preferences, setPreferences] = useState({
+    emailNotifications: true,
+    autoSaveCode: false,
+    darkMode: true,
+  });
+
+  // Security state
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState({
+    type: "",
+    text: "",
+  });
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
+  // Profile handlers
+  const handleProfileChange = (e) => {
+    setProfileData({ ...profileData, [e.target.name]: e.target.value });
+  };
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setProfileLoading(true);
+    setProfileMessage({ type: "", text: "" });
+
+    try {
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_API_URL}/auth/profile`,
+        profileData,
+        { headers: { Authorization: `Bearer ${user.token}` } },
+      );
+
+      // Update user context
+      setUser({ ...user, name: data.name, email: data.email });
+      setProfileMessage({
+        type: "success",
+        text: "Profile updated successfully!",
+      });
+    } catch (err) {
+      setProfileMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to update profile",
+      });
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  // Preferences handlers
+  const togglePreference = (key) => {
+    setPreferences({ ...preferences, [key]: !preferences[key] });
+    // Save to localStorage
+    localStorage.setItem(
+      "userPreferences",
+      JSON.stringify({ ...preferences, [key]: !preferences[key] }),
+    );
+  };
+
+  // Security handlers
+  const handlePasswordChange = (e) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordLoading(true);
+    setPasswordMessage({ type: "", text: "" });
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordMessage({ type: "error", text: "Passwords do not match" });
+      setPasswordLoading(false);
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordMessage({
+        type: "error",
+        text: "Password must be at least 6 characters",
+      });
+      setPasswordLoading(false);
+      return;
+    }
+
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/auth/password`,
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        },
+        { headers: { Authorization: `Bearer ${user.token}` } },
+      );
+
+      setPasswordMessage({
+        type: "success",
+        text: "Password updated successfully!",
+      });
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      setPasswordMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to update password",
+      });
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  const toggle2FA = () => {
+    setTwoFactorEnabled(!twoFactorEnabled);
+    // In a real app, this would call an API
+    alert(
+      twoFactorEnabled
+        ? "Two-factor authentication disabled"
+        : "Two-factor authentication enabled",
+    );
+  };
 
   const tabs = [
     {
@@ -129,14 +265,60 @@ const Settings = () => {
                   <h2 className="text-2xl font-bold text-white mb-6">
                     Profile Information
                   </h2>
-                  <form className="space-y-6">
+
+                  {profileMessage.text && (
+                    <div
+                      className={`mb-6 p-4 rounded-xl backdrop-blur-sm ${
+                        profileMessage.type === "success"
+                          ? "bg-green-500/10 border border-green-500/30"
+                          : "bg-red-500/10 border border-red-500/30"
+                      }`}>
+                      <div className="flex items-center">
+                        <svg
+                          className={`w-5 h-5 mr-3 ${
+                            profileMessage.type === "success"
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20">
+                          {profileMessage.type === "success" ? (
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          ) : (
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          )}
+                        </svg>
+                        <p
+                          className={`text-sm ${
+                            profileMessage.type === "success"
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}>
+                          {profileMessage.text}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleProfileSubmit} className="space-y-6">
                     <div>
                       <label className="block text-sm font-semibold text-gray-300 mb-2">
                         Full Name
                       </label>
                       <input
                         type="text"
-                        defaultValue={user?.name}
+                        name="name"
+                        value={profileData.name}
+                        onChange={handleProfileChange}
+                        required
                         className="block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all backdrop-blur-sm"
                       />
                     </div>
@@ -146,15 +328,19 @@ const Settings = () => {
                       </label>
                       <input
                         type="email"
-                        defaultValue={user?.email}
+                        name="email"
+                        value={profileData.email}
+                        onChange={handleProfileChange}
+                        required
                         className="block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all backdrop-blur-sm"
                       />
                     </div>
                     <div>
                       <button
                         type="submit"
-                        className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50">
-                        Save Changes
+                        disabled={profileLoading}
+                        className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {profileLoading ? "Saving..." : "Save Changes"}
                       </button>
                     </div>
                   </form>
@@ -176,8 +362,20 @@ const Settings = () => {
                           Receive email updates about your reviews
                         </p>
                       </div>
-                      <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-green-500 transition-colors">
-                        <span className="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg" />
+                      <button
+                        onClick={() => togglePreference("emailNotifications")}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          preferences.emailNotifications
+                            ? "bg-green-500"
+                            : "bg-white/10"
+                        }`}>
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg ${
+                            preferences.emailNotifications
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
                       </button>
                     </div>
                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
@@ -189,8 +387,20 @@ const Settings = () => {
                           Automatically save your code in the editor
                         </p>
                       </div>
-                      <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10 transition-colors">
-                        <span className="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg" />
+                      <button
+                        onClick={() => togglePreference("autoSaveCode")}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          preferences.autoSaveCode
+                            ? "bg-green-500"
+                            : "bg-white/10"
+                        }`}>
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg ${
+                            preferences.autoSaveCode
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
                       </button>
                     </div>
                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
@@ -202,8 +412,18 @@ const Settings = () => {
                           Use dark theme across the application
                         </p>
                       </div>
-                      <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-green-500 transition-colors">
-                        <span className="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg" />
+                      <button
+                        onClick={() => togglePreference("darkMode")}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          preferences.darkMode ? "bg-green-500" : "bg-white/10"
+                        }`}>
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition shadow-lg ${
+                            preferences.darkMode
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
                       </button>
                     </div>
                   </div>
@@ -215,19 +435,68 @@ const Settings = () => {
                   <h2 className="text-2xl font-bold text-white mb-6">
                     Security
                   </h2>
+
+                  {passwordMessage.text && (
+                    <div
+                      className={`mb-6 p-4 rounded-xl backdrop-blur-sm ${
+                        passwordMessage.type === "success"
+                          ? "bg-green-500/10 border border-green-500/30"
+                          : "bg-red-500/10 border border-red-500/30"
+                      }`}>
+                      <div className="flex items-center">
+                        <svg
+                          className={`w-5 h-5 mr-3 ${
+                            passwordMessage.type === "success"
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20">
+                          {passwordMessage.type === "success" ? (
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          ) : (
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          )}
+                        </svg>
+                        <p
+                          className={`text-sm ${
+                            passwordMessage.type === "success"
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}>
+                          {passwordMessage.text}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-sm font-semibold text-gray-300 mb-4">
                         Change Password
                       </h3>
-                      <form className="space-y-4">
+                      <form
+                        onSubmit={handlePasswordSubmit}
+                        className="space-y-4">
                         <div>
                           <label className="block text-sm font-semibold text-gray-300 mb-2">
                             Current Password
                           </label>
                           <input
                             type="password"
+                            name="currentPassword"
+                            value={passwordData.currentPassword}
+                            onChange={handlePasswordChange}
                             placeholder="Enter current password"
+                            required
                             className="block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all backdrop-blur-sm"
                           />
                         </div>
@@ -237,7 +506,11 @@ const Settings = () => {
                           </label>
                           <input
                             type="password"
+                            name="newPassword"
+                            value={passwordData.newPassword}
+                            onChange={handlePasswordChange}
                             placeholder="Enter new password"
+                            required
                             className="block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all backdrop-blur-sm"
                           />
                         </div>
@@ -247,14 +520,19 @@ const Settings = () => {
                           </label>
                           <input
                             type="password"
+                            name="confirmPassword"
+                            value={passwordData.confirmPassword}
+                            onChange={handlePasswordChange}
                             placeholder="Confirm new password"
+                            required
                             className="block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all backdrop-blur-sm"
                           />
                         </div>
                         <button
                           type="submit"
-                          className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50">
-                          Update Password
+                          disabled={passwordLoading}
+                          className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed">
+                          {passwordLoading ? "Updating..." : "Update Password"}
                         </button>
                       </form>
                     </div>
@@ -268,11 +546,19 @@ const Settings = () => {
                             2FA Status
                           </p>
                           <p className="text-sm text-gray-400 mt-1">
-                            Add an extra layer of security
+                            {twoFactorEnabled
+                              ? "Two-factor authentication is enabled"
+                              : "Add an extra layer of security"}
                           </p>
                         </div>
-                        <button className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all">
-                          Enable
+                        <button
+                          onClick={toggle2FA}
+                          className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all ${
+                            twoFactorEnabled
+                              ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
+                              : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
+                          }`}>
+                          {twoFactorEnabled ? "Disable" : "Enable"}
                         </button>
                       </div>
                     </div>
