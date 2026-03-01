@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import PublicNavbar from "../components/PublicNavbar";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -257,11 +258,17 @@ const Blog = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <PublicNavbar />
+    <div className="min-h-screen bg-black text-white relative">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden py-32">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden py-24">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-green-500/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -776,11 +783,6 @@ const Blog = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-16 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/50">
@@ -887,7 +889,9 @@ const Blog = () => {
             </p>
           </div>
         </div>
-      </footer>
+      </div>
+
+      <Footer />
     </div>
   );
 };
