@@ -200,7 +200,7 @@ const ReviewDetail = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
 
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate("/dashboard")}
