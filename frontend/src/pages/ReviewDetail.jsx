@@ -5,11 +5,21 @@ import AuthContext from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import CodeSnippet from "../components/CodeSnippet";
+import Footer from "../components/Footer";
 
 const ReviewDetail = () => {
   const [review, setReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    bugs: true,
+    security: true,
+    performance: true,
+    quality: true,
+    refactored: true,
+  });
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -57,6 +67,87 @@ const ReviewDetail = () => {
     if (score >= 80) return "from-green-400 to-emerald-500";
     if (score >= 60) return "from-yellow-400 to-orange-500";
     return "from-red-400 to-pink-500";
+  };
+
+  const handleExportJSON = () => {
+    const dataStr = JSON.stringify(review, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `review-${review._id}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportMarkdown = () => {
+    let markdown = `# Code Review Report\n\n`;
+    markdown += `**Language:** ${review.language}\n`;
+    markdown += `**Date:** ${new Date(review.createdAt).toLocaleString()}\n`;
+    markdown += `**Overall Score:** ${aiResponse.overallScore}/100\n\n`;
+    markdown += `## Summary\n${aiResponse.summary}\n\n`;
+
+    if (aiResponse.bugs?.length > 0) {
+      markdown += `## Bugs Found (${aiResponse.bugs.length})\n\n`;
+      aiResponse.bugs.forEach((bug, i) => {
+        markdown += `### ${i + 1}. ${bug.issue}\n`;
+        markdown += `**Severity:** ${bug.severity}\n`;
+        markdown += `**Suggestion:** ${bug.suggestion}\n\n`;
+      });
+    }
+
+    if (aiResponse.securityIssues?.length > 0) {
+      markdown += `## Security Issues (${aiResponse.securityIssues.length})\n\n`;
+      aiResponse.securityIssues.forEach((issue, i) => {
+        markdown += `### ${i + 1}. ${issue.issue}\n`;
+        markdown += `**Risk:** ${issue.risk}\n`;
+        markdown += `**Fix:** ${issue.fix}\n\n`;
+      });
+    }
+
+    const dataBlob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `review-${review._id}.md`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code);
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const handleDeleteReview = async () => {
+    if (!window.confirm("Are you sure you want to delete this review?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/review/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      alert("Failed to delete review");
+    }
   };
 
   if (loading) {
@@ -110,23 +201,114 @@ const ReviewDetail = () => {
 
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-8 relative z-10">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="mb-6 flex items-center text-green-400 hover:text-green-300 font-medium transition-colors group">
-          <svg
-            className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Back to Dashboard
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center text-green-400 hover:text-green-300 font-medium transition-colors group">
+            <svg
+              className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to Dashboard
+          </button>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleCopyLink}
+              className="inline-flex items-center px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
+              </svg>
+              {copied ? "Copied!" : "Share"}
+            </button>
+            <button
+              onClick={handleExportMarkdown}
+              className="inline-flex items-center px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+              Export MD
+            </button>
+            <button
+              onClick={handleExportJSON}
+              className="inline-flex items-center px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              JSON
+            </button>
+            <button
+              onClick={handlePrint}
+              className="inline-flex items-center px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                />
+              </svg>
+              Print
+            </button>
+            <button
+              onClick={handleDeleteReview}
+              className="inline-flex items-center px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
 
         {/* Header Card */}
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
@@ -206,115 +388,58 @@ const ReviewDetail = () => {
         {/* Bugs Section */}
         {aiResponse.bugs && aiResponse.bugs.length > 0 && (
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-red-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-white">Bugs Found</h3>
-              <span className="bg-red-500/20 text-red-400 text-sm font-bold px-3 py-1 rounded-full border border-red-500/30">
-                {aiResponse.bugs.length}
-              </span>
-            </div>
-            <div className="space-y-4">
-              {aiResponse.bugs.map((bug, index) => (
-                <div
-                  key={index}
-                  className="border border-white/10 rounded-xl p-5 hover:border-red-500/30 transition-colors bg-white/5 backdrop-blur-sm">
-                  <div className="flex items-start justify-between mb-3">
-                    <h4 className="font-bold text-white text-lg flex-1">
-                      {bug.issue}
-                    </h4>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold border uppercase ${getSeverityColor(bug.severity)}`}>
-                      {bug.severity}
-                    </span>
-                  </div>
-                  <div className="bg-green-500/10 border-l-4 border-green-400 p-4 rounded backdrop-blur-sm">
-                    <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                        />
-                      </svg>
-                      Suggestion:
-                    </p>
-                    <p className="text-gray-300">{bug.suggestion}</p>
-                  </div>
+            <div
+              className="flex items-center justify-between mb-6 cursor-pointer"
+              onClick={() => toggleSection("bugs")}>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-red-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Security Issues */}
-        {aiResponse.securityIssues && aiResponse.securityIssues.length > 0 && (
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-red-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
+                <h3 className="text-2xl font-bold text-white">Bugs Found</h3>
+                <span className="bg-red-500/20 text-red-400 text-sm font-bold px-3 py-1 rounded-full border border-red-500/30">
+                  {aiResponse.bugs.length}
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-white">Security Issues</h3>
-              <span className="bg-red-500/20 text-red-400 text-sm font-bold px-3 py-1 rounded-full border border-red-500/30">
-                {aiResponse.securityIssues.length}
-              </span>
+              <svg
+                className={`w-6 h-6 text-gray-400 transition-transform ${expandedSections.bugs ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </div>
-            <div className="space-y-4">
-              {aiResponse.securityIssues.map((issue, index) => (
-                <div
-                  key={index}
-                  className="border border-red-500/30 bg-red-500/10 rounded-xl p-5 backdrop-blur-sm">
-                  <h4 className="font-bold text-red-400 mb-3 text-lg">
-                    {issue.issue}
-                  </h4>
-                  <div className="space-y-2">
-                    <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-                      <p className="text-sm font-semibold text-red-400 mb-1 flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                          />
-                        </svg>
-                        Risk:
-                      </p>
-                      <p className="text-gray-300">{issue.risk}</p>
+            {expandedSections.bugs && (
+              <div className="space-y-4">
+                {aiResponse.bugs.map((bug, index) => (
+                  <div
+                    key={index}
+                    className="border border-white/10 rounded-xl p-5 hover:border-red-500/30 transition-colors bg-white/5 backdrop-blur-sm">
+                    <div className="flex items-start justify-between mb-3">
+                      <h4 className="font-bold text-white text-lg flex-1">
+                        {bug.issue}
+                      </h4>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold border uppercase ${getSeverityColor(bug.severity)}`}>
+                        {bug.severity}
+                      </span>
                     </div>
-                    <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                    <div className="bg-green-500/10 border-l-4 border-green-400 p-4 rounded backdrop-blur-sm">
                       <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
                         <svg
                           className="w-4 h-4 mr-2"
@@ -325,17 +450,112 @@ const ReviewDetail = () => {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
                           />
                         </svg>
-                        Fix:
+                        Suggestion:
                       </p>
-                      <p className="text-gray-300">{issue.fix}</p>
+                      <p className="text-gray-300">{bug.suggestion}</p>
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Security Issues */}
+        {aiResponse.securityIssues && aiResponse.securityIssues.length > 0 && (
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
+            <div
+              className="flex items-center justify-between mb-6 cursor-pointer"
+              onClick={() => toggleSection("security")}>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-red-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
                 </div>
-              ))}
+                <h3 className="text-2xl font-bold text-white">
+                  Security Issues
+                </h3>
+                <span className="bg-red-500/20 text-red-400 text-sm font-bold px-3 py-1 rounded-full border border-red-500/30">
+                  {aiResponse.securityIssues.length}
+                </span>
+              </div>
+              <svg
+                className={`w-6 h-6 text-gray-400 transition-transform ${expandedSections.security ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </div>
+            {expandedSections.security && (
+              <div className="space-y-4">
+                {aiResponse.securityIssues.map((issue, index) => (
+                  <div
+                    key={index}
+                    className="border border-red-500/30 bg-red-500/10 rounded-xl p-5 backdrop-blur-sm">
+                    <h4 className="font-bold text-red-400 mb-3 text-lg">
+                      {issue.issue}
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                        <p className="text-sm font-semibold text-red-400 mb-1 flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                          </svg>
+                          Risk:
+                        </p>
+                        <p className="text-gray-300">{issue.risk}</p>
+                      </div>
+                      <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                        <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Fix:
+                        </p>
+                        <p className="text-gray-300">{issue.fix}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -343,57 +563,75 @@ const ReviewDetail = () => {
         {aiResponse.performanceImprovements &&
           aiResponse.performanceImprovements.length > 0 && (
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-yellow-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-white">
-                  Performance Improvements
-                </h3>
-                <span className="bg-yellow-500/20 text-yellow-400 text-sm font-bold px-3 py-1 rounded-full border border-yellow-500/30">
-                  {aiResponse.performanceImprovements.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {aiResponse.performanceImprovements.map((perf, index) => (
-                  <div
-                    key={index}
-                    className="border border-yellow-500/30 bg-yellow-500/10 rounded-xl p-5 backdrop-blur-sm">
-                    <h4 className="font-bold text-yellow-400 mb-2 text-lg">
-                      {perf.issue}
-                    </h4>
-                    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                      <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                          />
-                        </svg>
-                        Improvement:
-                      </p>
-                      <p className="text-gray-300">{perf.improvement}</p>
-                    </div>
+              <div
+                className="flex items-center justify-between mb-6 cursor-pointer"
+                onClick={() => toggleSection("performance")}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-yellow-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
                   </div>
-                ))}
+                  <h3 className="text-2xl font-bold text-white">
+                    Performance Improvements
+                  </h3>
+                  <span className="bg-yellow-500/20 text-yellow-400 text-sm font-bold px-3 py-1 rounded-full border border-yellow-500/30">
+                    {aiResponse.performanceImprovements.length}
+                  </span>
+                </div>
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform ${expandedSections.performance ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </div>
+              {expandedSections.performance && (
+                <div className="space-y-4">
+                  {aiResponse.performanceImprovements.map((perf, index) => (
+                    <div
+                      key={index}
+                      className="border border-yellow-500/30 bg-yellow-500/10 rounded-xl p-5 backdrop-blur-sm">
+                      <h4 className="font-bold text-yellow-400 mb-2 text-lg">
+                        {perf.issue}
+                      </h4>
+                      <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                        <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                            />
+                          </svg>
+                          Improvement:
+                        </p>
+                        <p className="text-gray-300">{perf.improvement}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -401,59 +639,79 @@ const ReviewDetail = () => {
         {aiResponse.codeQualitySuggestions &&
           aiResponse.codeQualitySuggestions.length > 0 && (
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/10">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-purple-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-white">
-                  Code Quality Suggestions
-                </h3>
-                <span className="bg-purple-500/20 text-purple-400 text-sm font-bold px-3 py-1 rounded-full border border-purple-500/30">
-                  {aiResponse.codeQualitySuggestions.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {aiResponse.codeQualitySuggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="border border-purple-500/30 bg-purple-500/10 rounded-xl p-5 backdrop-blur-sm">
-                    <h4 className="font-bold text-purple-400 mb-2 text-lg">
-                      {suggestion.issue}
-                    </h4>
-                    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                      <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                        Recommendation:
-                      </p>
-                      <p className="text-gray-300">
-                        {suggestion.recommendation}
-                      </p>
-                    </div>
+              <div
+                className="flex items-center justify-between mb-6 cursor-pointer"
+                onClick={() => toggleSection("quality")}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                      />
+                    </svg>
                   </div>
-                ))}
+                  <h3 className="text-2xl font-bold text-white">
+                    Code Quality Suggestions
+                  </h3>
+                  <span className="bg-purple-500/20 text-purple-400 text-sm font-bold px-3 py-1 rounded-full border border-purple-500/30">
+                    {aiResponse.codeQualitySuggestions.length}
+                  </span>
+                </div>
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform ${expandedSections.quality ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </div>
+              {expandedSections.quality && (
+                <div className="space-y-4">
+                  {aiResponse.codeQualitySuggestions.map(
+                    (suggestion, index) => (
+                      <div
+                        key={index}
+                        className="border border-purple-500/30 bg-purple-500/10 rounded-xl p-5 backdrop-blur-sm">
+                        <h4 className="font-bold text-purple-400 mb-2 text-lg">
+                          {suggestion.issue}
+                        </h4>
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                          <p className="text-sm font-semibold text-green-400 mb-1 flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                            Recommendation:
+                          </p>
+                          <p className="text-gray-300">
+                            {suggestion.recommendation}
+                          </p>
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -489,6 +747,8 @@ const ReviewDetail = () => {
             />
           </div>
         )}
+
+        <Footer />
       </div>
     </div>
   );
