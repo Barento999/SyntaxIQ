@@ -179,8 +179,63 @@ export const getProfile = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        preferences: user.preferences,
         createdAt: user.createdAt,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePreferences = async (req, res, next) => {
+  try {
+    const { emailNotifications, autoSaveCode, darkMode } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // Update preferences
+    if (emailNotifications !== undefined) {
+      user.preferences.emailNotifications = emailNotifications;
+    }
+    if (autoSaveCode !== undefined) {
+      user.preferences.autoSaveCode = autoSaveCode;
+    }
+    if (darkMode !== undefined) {
+      user.preferences.darkMode = darkMode;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      success: true,
+      data: {
+        preferences: updatedUser.preferences,
+      },
+      message: "Preferences updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPreferences = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    res.json({
+      success: true,
+      data: user.preferences,
     });
   } catch (error) {
     next(error);

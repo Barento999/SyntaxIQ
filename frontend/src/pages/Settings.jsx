@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
@@ -24,6 +24,7 @@ const Settings = () => {
     autoSaveCode: false,
     darkMode: true,
   });
+  const [preferencesLoading, setPreferencesLoading] = useState(false);
 
   // Security state
   const [passwordData, setPasswordData] = useState({
@@ -37,6 +38,23 @@ const Settings = () => {
     text: "",
   });
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
+  // Load preferences on mount
+  useEffect(() => {
+    fetchPreferences();
+  }, []);
+
+  const fetchPreferences = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/preferences`,
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+      setPreferences(data.data);
+    } catch (err) {
+      console.error("Error fetching preferences:", err);
+    }
+  };
 
   // Profile handlers
   const handleProfileChange = (e) => {
@@ -52,11 +70,11 @@ const Settings = () => {
       const { data } = await axios.put(
         `${import.meta.env.VITE_API_URL}/auth/profile`,
         profileData,
-        { headers: { Authorization: `Bearer ${user.token}` } },
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
 
       // Update user context
-      setUser({ ...user, name: data.name, email: data.email });
+      setUser({ ...user, name: data.data.name, email: data.data.email });
       setProfileMessage({
         type: "success",
         text: "Profile updated successfully!",
@@ -72,12 +90,25 @@ const Settings = () => {
   };
 
   // Preferences handlers
-  const togglePreference = (key) => {
-    setPreferences({ ...preferences, [key]: !preferences[key] });
-    // Save to localStorage
-    localStorage.setItem(
-      "userPreferences",
-      JSON.stringify({ ...preferences, [key]: !preferences[key] }),
+  const togglePreference = async (key) => {
+    const newPreferences = { ...preferences, [key]: !preferences[key] };
+    setPreferences(newPreferences);
+    setPreferencesLoading(true);
+
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/auth/preferences`,
+        newPreferences,
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+    } catch (err) {
+      console.error("Error updating preferences:", err);
+      // Revert on error
+      setPreferences(preferences);
+    } finally {
+      setPreferencesLoading(false);
+    }
+  };
     );
   };
 
