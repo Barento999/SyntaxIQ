@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PublicNavbar from "../components/PublicNavbar";
+import Footer from "../components/Footer";
 
 const About = () => {
   const team = [
@@ -917,117 +918,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-16 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/50">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                    />
-                  </svg>
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                  SyntaxIQ
-                </span>
-              </div>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Powered by Google Gemini AI for intelligent code analysis
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-4">Product</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="/features"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/pricing"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/docs"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Documentation
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="/about"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/blog"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href="mailto:support@syntaxiq.ai"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Privacy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors text-sm">
-                    Terms
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-white/10 pt-8">
-            <p className="text-gray-400 text-sm text-center">
-              © 2024 SyntaxIQ. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import PublicNavbar from "../components/PublicNavbar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import AuthContext from "../context/AuthContext";
 
 const Documentation = () => {
+  const { user } = useContext(AuthContext);
   const [activeSection, setActiveSection] = useState("intro");
 
   const sections = [
@@ -55,7 +58,7 @@ const Documentation = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
 
       {/* Navigation */}
-      <Navbar />
+      {user ? <Navbar /> : <PublicNavbar />}
 
       {/* Sidebar - Fixed at left */}
       <aside className="hidden lg:block fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-black border-r border-white/10 overflow-y-auto z-40">

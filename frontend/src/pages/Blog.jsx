@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import PublicNavbar from "../components/PublicNavbar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import AuthContext from "../context/AuthContext";
 
 const Blog = () => {
+  const { user } = useContext(AuthContext);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const blogPosts = [
@@ -264,7 +267,7 @@ const Blog = () => {
       <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
 
-      <Navbar />
+      {user ? <Navbar /> : <PublicNavbar />}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Hero Section */}
