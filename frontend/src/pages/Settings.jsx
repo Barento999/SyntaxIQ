@@ -53,7 +53,7 @@ const Settings = () => {
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/auth/preferences`,
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        { headers: { Authorization: `Bearer ${user.token}` } },
       );
       setPreferences(data.data);
     } catch (err) {
@@ -65,19 +65,12 @@ const Settings = () => {
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/auth/subscription`,
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        { headers: { Authorization: `Bearer ${user.token}` } },
       );
       setSubscription(data.data.subscription);
       setUsageStats(data.data.usage);
     } catch (err) {
       console.error("Error fetching subscription:", err);
-    }
-  };
-        { headers: { Authorization: `Bearer ${user.token}` } },
-      );
-      setPreferences(data.data);
-    } catch (err) {
-      console.error("Error fetching preferences:", err);
     }
   };
 
@@ -639,8 +632,7 @@ const Settings = () => {
                               Reviews Used
                             </span>
                             <span className="text-sm font-semibold text-white">
-                              {usageStats.reviewsThisMonth} /{" "}
-                              {usageStats.limit}
+                              {usageStats.reviewsThisMonth} / {usageStats.limit}
                             </span>
                           </div>
                           <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
@@ -669,12 +661,10 @@ const Settings = () => {
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-500">
-                              Resets On
-                            </p>
+                            <p className="text-xs text-gray-500">Resets On</p>
                             <p className="text-lg font-bold text-white">
                               {new Date(
-                                usageStats.resetDate
+                                usageStats.resetDate,
                               ).toLocaleDateString()}
                             </p>
                           </div>
