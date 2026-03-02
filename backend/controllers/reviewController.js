@@ -1,4 +1,5 @@
 import Review from "../models/Review.js";
+import User from "../models/User.js";
 import { analyzeCode } from "../services/geminiService.js";
 
 export const createReview = async (req, res, next) => {
@@ -8,6 +9,16 @@ export const createReview = async (req, res, next) => {
     if (!code || !language) {
       res.status(400);
       throw new Error("Please provide code and language");
+    }
+
+    // Check usage limits
+    const user = await User.findById(req.user._id);
+    if (!user.canCreateReview()) {
+      const stats = user.getUsageStats();
+      res.status(403);
+      throw new Error(
+        `Monthly review limit reached (${stats.reviewsThisMonth}/${stats.limit}). Upgrade your plan or wait until ${stats.resetDate.toLocaleDateString()}.`,
+      );
     }
 
     if (code.length > parseInt(process.env.MAX_CODE_LENGTH || 10000)) {
@@ -34,9 +45,13 @@ export const createReview = async (req, res, next) => {
       aiResponse,
     });
 
+    // Increment usage counter
+    await user.incrementReviewCount();
+
     res.status(201).json({
       success: true,
       data: review,
+      usage: user.getUsageStats(),
     });
   } catch (error) {
     next(error);

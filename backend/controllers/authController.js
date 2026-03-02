@@ -241,3 +241,123 @@ export const getPreferences = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getSubscription = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const usageStats = user.getUsageStats();
+
+    res.json({
+      success: true,
+      data: {
+        subscription: user.subscription,
+        usage: usageStats,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSubscription = async (req, res, next) => {
+  try {
+    const { plan } = req.body;
+
+    if (!["free", "pro", "enterprise"].includes(plan)) {
+      res.status(400);
+      throw new Error("Invalid plan");
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // In a real app, this would integrate with Stripe
+    // For now, we'll just update the plan directly
+    user.subscription.plan = plan;
+    user.subscription.status = "active";
+    user.subscription.startDate = new Date();
+
+    // Set end date for paid plans (1 month from now)
+    if (plan !== "free") {
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1);
+      user.subscription.endDate = endDate;
+    } else {
+      user.subscription.endDate = null;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      data: {
+        subscription: user.subscription,
+        usage: user.getUsageStats(),
+      },
+      message: `Successfully upgraded to ${plan} plan`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelSubscription = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    if (user.subscription.plan === "free") {
+      res.status(400);
+      throw new Error("Cannot cancel free plan");
+    }
+
+    // In a real app, this would cancel the Stripe subscription
+    user.subscription.status = "cancelled";
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Subscription cancelled successfully",
+      data: {
+        subscription: user.subscription,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUsageStats = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const stats = user.getUsageStats();
+
+    res.json({
+      success: true,
+      data: stats,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

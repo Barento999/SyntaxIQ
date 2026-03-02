@@ -39,9 +39,14 @@ const Settings = () => {
   });
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
-  // Load preferences on mount
+  // Subscription state
+  const [subscription, setSubscription] = useState(null);
+  const [usageStats, setUsageStats] = useState(null);
+
+  // Load preferences and subscription on mount
   useEffect(() => {
     fetchPreferences();
+    fetchSubscription();
   }, []);
 
   const fetchPreferences = async () => {
@@ -49,6 +54,26 @@ const Settings = () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/auth/preferences`,
         { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+      setPreferences(data.data);
+    } catch (err) {
+      console.error("Error fetching preferences:", err);
+    }
+  };
+
+  const fetchSubscription = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/subscription`,
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+      setSubscription(data.data.subscription);
+      setUsageStats(data.data.usage);
+    } catch (err) {
+      console.error("Error fetching subscription:", err);
+    }
+  };
+        { headers: { Authorization: `Bearer ${user.token}` } },
       );
       setPreferences(data.data);
     } catch (err) {
@@ -70,7 +95,7 @@ const Settings = () => {
       const { data } = await axios.put(
         `${import.meta.env.VITE_API_URL}/auth/profile`,
         profileData,
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        { headers: { Authorization: `Bearer ${user.token}` } },
       );
 
       // Update user context
@@ -99,7 +124,7 @@ const Settings = () => {
       await axios.put(
         `${import.meta.env.VITE_API_URL}/auth/preferences`,
         newPreferences,
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        { headers: { Authorization: `Bearer ${user.token}` } },
       );
     } catch (err) {
       console.error("Error updating preferences:", err);
@@ -108,8 +133,6 @@ const Settings = () => {
     } finally {
       setPreferencesLoading(false);
     }
-  };
-    );
   };
 
   // Security handlers
@@ -600,56 +623,130 @@ const Settings = () => {
               {activeTab === "billing" && (
                 <div className="p-8">
                   <h2 className="text-2xl font-bold text-white mb-6">
-                    Billing
+                    Billing & Usage
                   </h2>
+
+                  {/* Usage Stats */}
+                  {usageStats && (
+                    <div className="mb-6 bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-green-500/30">
+                      <h3 className="text-lg font-semibold text-white mb-4">
+                        Monthly Usage
+                      </h3>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-gray-400">
+                              Reviews Used
+                            </span>
+                            <span className="text-sm font-semibold text-white">
+                              {usageStats.reviewsThisMonth} /{" "}
+                              {usageStats.limit}
+                            </span>
+                          </div>
+                          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full transition-all ${
+                                usageStats.remaining === 0 ||
+                                (typeof usageStats.remaining === "number" &&
+                                  usageStats.remaining < 3)
+                                  ? "bg-red-500"
+                                  : "bg-green-500"
+                              }`}
+                              style={{
+                                width:
+                                  usageStats.limit === "Unlimited"
+                                    ? "100%"
+                                    : `${(usageStats.reviewsThisMonth / parseInt(usageStats.limit)) * 100}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                          <div>
+                            <p className="text-xs text-gray-500">Remaining</p>
+                            <p className="text-lg font-bold text-green-400">
+                              {usageStats.remaining}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">
+                              Resets On
+                            </p>
+                            <p className="text-lg font-bold text-white">
+                              {new Date(
+                                usageStats.resetDate
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Current Plan */}
                   <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <p className="text-sm font-semibold text-gray-300">
                           Current Plan
                         </p>
-                        <p className="text-3xl font-bold text-white mt-2">
-                          Free
+                        <p className="text-3xl font-bold text-white mt-2 capitalize">
+                          {subscription?.plan || "Free"}
                         </p>
                       </div>
-                      <button
-                        onClick={() => navigate("/pricing")}
-                        className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50">
-                        Upgrade
-                      </button>
+                      {subscription?.plan === "free" && (
+                        <button
+                          onClick={() => navigate("/pricing")}
+                          className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-black font-semibold rounded-xl hover:from-green-500 hover:to-emerald-600 transition-all shadow-lg shadow-green-500/50">
+                          Upgrade
+                        </button>
+                      )}
                     </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-400 mt-4">
-                      <svg
-                        className="w-4 h-4 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span>10 reviews per month</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-400 mt-2">
-                      <svg
-                        className="w-4 h-4 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span>Basic features</span>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <svg
+                          className="w-4 h-4 text-green-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        <span>
+                          {subscription?.plan === "free"
+                            ? "10 reviews per month"
+                            : subscription?.plan === "pro"
+                              ? "100 reviews per month"
+                              : "Unlimited reviews"}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <svg
+                          className="w-4 h-4 text-green-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        <span>
+                          {subscription?.plan === "free"
+                            ? "Basic features"
+                            : "All features"}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Payment Method */}
                   <div className="mt-6">
                     <h3 className="text-sm font-semibold text-gray-300 mb-4">
                       Payment Method
