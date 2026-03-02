@@ -12,6 +12,7 @@ package-lock.json
 .env.production.local
 backend/.env
 frontend/.env
+frontend/.env.example
 
 # Logs
 *.log
